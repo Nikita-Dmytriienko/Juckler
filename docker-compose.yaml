@@ -2,14 +2,14 @@ version: '3.13'
 
 services:
   db:
-    image: postgres:18
+    image: postgres:17
     environment:
       POSTGRES_DB: juckler
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       TZ: Europe/Kyiv
     ports:
-      - "6433:5432"
+      - "6433:5433"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
