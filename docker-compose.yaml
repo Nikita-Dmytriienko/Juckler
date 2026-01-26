@@ -1,17 +1,39 @@
-version: '3.13'
-
 services:
   db:
     image: postgres:17
     environment:
       POSTGRES_DB: juckler
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: root
       TZ: Europe/Kyiv
     ports:
-      - "6433:5433"
+      - "6433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    command: uv run uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=juckler
+      - SECRET_KEY=be9c3fe27b6add9457d9e3874e8b0ede7cf7fe2ec2d27943eb1574b074cb5344
+      - PROJECT_NAME=Juckler
 
 volumes:
   postgres_data:
