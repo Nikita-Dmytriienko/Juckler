@@ -1,10 +1,9 @@
+# ruff: noqa: B008  # Framework convention override - FastAPI requires this pattern
 from fastapi import Depends, FastAPI
-
-# ruff: noqa: B008
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.app.database.session import get_db
+from backend.app.database.database import get_db
 
 app = FastAPI(title="Juckler - Personal Finance Tracker")
 
