@@ -1,31 +1,22 @@
 import datetime
+import enum
 import uuid
-from typing import TYPE_CHECKING, Annotated
+from typing import TYPE_CHECKING
 
-from sqlalchemy import (
-    String,
-    text,
-)
+from sqlalchemy import Enum, ForeignKey, Index, String, text
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.app.database.base import Base
 
 if TYPE_CHECKING:
-    pass
+    from .transaction import Transaction
+    from .user import User
 
 
-intpk = Annotated[int, mapped_column(primary_key=True)]
-created_at = Annotated[
-    datetime.datetime, mapped_column(server_default=text("TIMEZONE('utc', now())"))
-]
-updated_at = Annotated[
-    datetime.datetime,
-    mapped_column(
-        server_default=text("TIMEZONE('utc', now())"),
-        onupdate=datetime.datetime.now(datetime.UTC),
-    ),
-]
+class CategoryType(enum.Enum):
+    INCOME = "income"
+    EXPENSE = "expense"
 
 
 class Category(Base):
@@ -35,5 +26,35 @@ class Category(Base):
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
     name: Mapped[str] = mapped_column(String(256), nullable=False)
-    created_at: Mapped[created_at]
-    updated_at: Mapped[updated_at]
+    type: Mapped[CategoryType] = mapped_column(
+        Enum(CategoryType), nullable=False, index=True
+    )
+    color: Mapped[str] = mapped_column(String(7), default="#808080")
+    icon: Mapped[str] = mapped_column(String(50), nullable=True)
+
+    # Foreign key
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+
+    # Relationships
+    user: Mapped["User"] = relationship(back_populates="categories")
+    transactions: Mapped[list["Transaction"]] = relationship(
+        back_populates="category", cascade="all, delete-orphan", lazy="selectin"
+    )
+
+    created_at: Mapped[datetime.datetime] = mapped_column(
+        server_default=text("TIMEZONE('utc', now())")
+    )
+    updated_at: Mapped[datetime.datetime] = mapped_column(
+        server_default=text("TIMEZONE('utc', now())"),
+        onupdate=datetime.datetime.now(datetime.UTC),
+    )
+
+    __table_args__ = (
+        Index("idx_category_user_name", "user_id", "name"),
+        Index("idx_category_user_type", "user_id", "type"),
+    )
