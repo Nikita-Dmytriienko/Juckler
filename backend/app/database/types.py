@@ -2,7 +2,7 @@ import datetime
 import uuid
 from typing import Annotated
 
-from sqlalchemy import text
+from sqlalchemy import String, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import mapped_column
 
@@ -22,3 +22,8 @@ updated_at = Annotated[
         onupdate=datetime.datetime.utcnow,
     ),
 ]
+
+
+str_256 = Annotated[str, mapped_column(String(256))]
+str_512 = Annotated[str, mapped_column(String(512))]
+email_type = Annotated[str, mapped_column(String(255), unique=True, index=True)]
