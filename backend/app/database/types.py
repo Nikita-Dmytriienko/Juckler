@@ -24,6 +24,7 @@ updated_at = Annotated[
 ]
 
 
+str_100 = Annotated[str, mapped_column(String(100))]
 str_256 = Annotated[str, mapped_column(String(256))]
 str_512 = Annotated[str, mapped_column(String(512))]
 email_type = Annotated[str, mapped_column(String(255), unique=True, index=True)]
