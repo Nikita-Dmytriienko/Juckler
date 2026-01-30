@@ -1,3 +1,7 @@
 .idea
 .venv
 .env
+
+
+backend/alembic/script.py.mako
+alembic.ini
