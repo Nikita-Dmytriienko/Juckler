@@ -26,7 +26,7 @@ class CategoryRead(BaseModel):
     type: CategoryType
     color: str
     icon: str | None
-    user_id: int
+    user_id: uuid.UUID
     created_at: datetime
     updated_at: datetime
 
