@@ -5,6 +5,7 @@ from enum import Enum
 from pydantic import BaseModel, Field
 
 
+# CATEGORY TYPE
 class CategoryType(str, Enum):
     INCOME = "income"
     EXPENSE = "expense"
@@ -33,5 +34,9 @@ class CategoryRead(BaseModel):
         from_attributes = True
 
 
+# UPDATE
 class CategoryUpdate(BaseModel):
-    pass
+    name: str = Field(min_length=1, max_length=256)
+    type: CategoryType | None = None
+    color: str | None = Field(default=None, pattern=r"^#[0-9A-Fa-f]{6}$")
+    icon: str | None = Field(default=None, max_length=50)
