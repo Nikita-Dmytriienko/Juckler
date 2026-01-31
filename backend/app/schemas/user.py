@@ -129,9 +129,16 @@ class UserList(BaseModel):
 
 # USER TOKEN
 class UserToken(BaseModel):
-    pass
+    access_token: str
+    refresh_token: str
+    token_type: str
+    expires_in: int
 
 
 # USER PUBLIC
 class UserPublic(BaseModel):
-    pass
+    id: uuid.UUID
+    username: str
+    first_name: str | None
+    last_name: str | None
+    avatar_url: str | None
