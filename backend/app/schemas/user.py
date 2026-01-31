@@ -111,7 +111,11 @@ class UserPasswordChange(BaseModel):
 
 # USER ADMIN UPDATE
 class UserAdminUpdate(BaseModel):
-    pass
+    role: UserRole | None = None
+    is_active: bool | None = None
+    is_verified: bool | None = None
+    email_verified: bool | None = None
+    phone_verified: bool | None = None
 
 
 # LIST
