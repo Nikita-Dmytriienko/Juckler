@@ -27,13 +27,13 @@ class User(Base):
         String(255), unique=True, index=True, nullable=False
     )
     username: Mapped[str] = mapped_column(
-        String(50), unique=True, index=True, nullable=False
+        String(20), unique=True, index=True, nullable=False
     )
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
 
     # Personal info
-    first_name: Mapped[str | None] = mapped_column(String(50), nullable=True)
-    last_name: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    first_name: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    last_name: Mapped[str | None] = mapped_column(String(32), nullable=True)
     phone: Mapped[str | None] = mapped_column(String(20), nullable=True, index=True)
     avatar_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
 
