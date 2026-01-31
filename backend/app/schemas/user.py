@@ -1,6 +1,6 @@
 from enum import Enum
 
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr, Field
 
 
 # USER TYPE
@@ -12,7 +12,19 @@ class UserRole(str, Enum):
 
 # CREATE
 class UserCreate(BaseModel):
-    pass
+    email: EmailStr = Field(description="User email address")
+    username: str = Field(
+        min_length=4,
+        max_length=20,
+        pattern=r"^[a-zA-Z0-9_]+$",
+        description="Unique username (letters, numbers, underscore)",
+    )
+    password: str = Field(min_length=8, max_length=32, description="Strong password")
+    # Optional fields
+    # first_name:
+    # last_name:
+    # phone:
+    # timezone:
 
 
 # LOGIN
