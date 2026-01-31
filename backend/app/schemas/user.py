@@ -22,12 +22,20 @@ class UserCreate(BaseModel):
         description="Unique username (letters, numbers, underscore)",
     )
     password: str = Field(min_length=8, max_length=32, description="Strong password")
-    # Optional fields
 
-    # first_name:
-    # last_name:
-    # phone:
-    # timezone:
+    # Optional fields
+    first_name: str | None = Field(
+        default=None, min_length=3, max_length=32, description="First name"
+    )
+    last_name: str | None = Field(
+        default=None, min_length=3, max_length=32, description="Last name"
+    )
+    phone: str | None = Field(
+        default=None,
+        pattern=r"^\+?[1-9]\d{1,14}$",
+        description="Phone number in E.164 format",
+    )
+    timezone: str | None = Field(default="UTC", description="User timezone")
 
 
 # LOGIN
