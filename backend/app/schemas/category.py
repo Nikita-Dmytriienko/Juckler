@@ -30,13 +30,12 @@ class CategoryRead(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # UPDATE
 class CategoryUpdate(BaseModel):
-    name: str = Field(min_length=1, max_length=256)
+    name: str | None = Field(min_length=1, max_length=256)
     type: CategoryType | None = None
     color: str | None = Field(default=None, pattern=r"^#[0-9A-Fa-f]{6}$")
     icon: str | None = Field(default=None, max_length=50)
