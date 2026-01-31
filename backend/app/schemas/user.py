@@ -105,7 +105,8 @@ class UserUpdate(BaseModel):
 
 # USER PASSWORD CHANGE
 class UserPasswordChange(BaseModel):
-    pass
+    current_password: str
+    new_password: str = Field(min_length=8)
 
 
 # USER ADMIN UPDATE
