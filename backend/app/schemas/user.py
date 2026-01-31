@@ -109,7 +109,7 @@ class UserPasswordChange(BaseModel):
     new_password: str = Field(min_length=8)
 
 
-# USER ADMIN UPDATE
+# ADMIN USER MANAGEMENT
 class UserAdminUpdate(BaseModel):
     role: UserRole | None = None
     is_active: bool | None = None
@@ -118,9 +118,13 @@ class UserAdminUpdate(BaseModel):
     phone_verified: bool | None = None
 
 
-# LIST
+# LIST WITH PAGINATION
 class UserList(BaseModel):
-    pass
+    items: list[UserRead]
+    total: int
+    page: int
+    page_size: int
+    pages: int
 
 
 # USER TOKEN
