@@ -1,9 +1,7 @@
 import enum
-import uuid
 from typing import TYPE_CHECKING
 
 from sqlalchemy import Enum, ForeignKey, Index, String
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.app.database.base import Base
@@ -33,8 +31,7 @@ class Category(Base):
     created_at: Mapped[created_at]
     updated_at: Mapped[updated_at]
     # Foreign key
-    user_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True),
+    user_id: Mapped[uuid_pk] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
