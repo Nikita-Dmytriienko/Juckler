@@ -47,5 +47,6 @@ class CategoryList(BaseModel):
     total: int
     page: int
     page_size: int
+    pages: int
 
     model_config = ConfigDict(from_attributes=True)
