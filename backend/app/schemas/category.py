@@ -35,7 +35,7 @@ class CategoryRead(BaseModel):
 
 # UPDATE
 class CategoryUpdate(BaseModel):
-    name: str | None = Field(min_length=1, max_length=256)
+    name: str | None = Field(default=None, min_length=1, max_length=256)
     type: CategoryType | None = None
     color: str | None = Field(default=None, pattern=r"^#[0-9A-Fa-f]{6}$")
     icon: str | None = Field(default=None, max_length=50)

@@ -126,12 +126,21 @@ class UserList(BaseModel):
     page_size: int
     pages: int
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 # USER TOKEN
 class UserToken(BaseModel):
-    pass
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+    expires_in: int
 
 
 # USER PUBLIC
 class UserPublic(BaseModel):
-    pass
+    id: uuid.UUID
+    username: str
+    first_name: str | None
+    last_name: str | None
+    avatar_url: str | None

@@ -1,11 +1,9 @@
 import enum
-import uuid
 from datetime import datetime
 from decimal import Decimal
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
-from sqlalchemy import Enum, ForeignKey, Index, Numeric, Text
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Enum, ForeignKey, Index, Numeric, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.app.database.base import Base
@@ -22,6 +20,13 @@ class TransactionType(enum.Enum):
     TRANSFER = "transfer"
 
 
+class TransactionStatus(enum.Enum):
+    PENDING = "pending"
+    COMPLETED = "completed"
+    CANCELLED = "cancelled"
+    FAILED = "failed"
+
+
 class Transaction(Base):
     __tablename__ = "transactions"
 
@@ -32,18 +37,21 @@ class Transaction(Base):
     )
     description: Mapped[str] = mapped_column(Text, nullable=True)
     date: Mapped[datetime] = mapped_column(nullable=False, index=True)
+    status: Mapped[TransactionStatus] = mapped_column(
+        Enum(TransactionStatus),
+        default=TransactionStatus.COMPLETED,
+    )
     created_at: Mapped[created_at]
     updated_at: Mapped[updated_at]
+    currency: Mapped[str] = mapped_column(String(3), default="USD")
 
     # Foreign keys
-    user_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True),
+    user_id: Mapped[uuid_pk] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
-    category_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True),
+    category_id: Mapped[uuid_pk | None] = mapped_column(
         ForeignKey("categories.id", ondelete="SET NULL"),
         nullable=True,
         index=True,
@@ -51,10 +59,11 @@ class Transaction(Base):
 
     # Relationships
     user: Mapped["User"] = relationship(back_populates="transactions")
-    category: Mapped[Optional["Category"]] = relationship(back_populates="transactions")
+    category: Mapped["Category | None"] = relationship(back_populates="transactions")
 
     __table_args__ = (
         Index("idx_transaction_user_date", "user_id", "date"),
         Index("idx_transaction_user_category", "user_id", "category_id"),
         Index("idx_transaction_date_type", "date", "type"),
+        Index("idx_transaction_status", "status"),
     )
