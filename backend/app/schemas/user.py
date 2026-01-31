@@ -35,6 +35,9 @@ class UserCreate(BaseModel):
         pattern=r"^\+?[1-9]\d{1,14}$",
         description="Phone number in E.164 format",
     )
+    currency: str | None = Field(
+        default="USD", max_length=3, description="Default currency (USD, EUR, etc)"
+    )
     timezone: str | None = Field(default="UTC", description="User timezone")
 
 
@@ -55,7 +58,7 @@ class UserRead(BaseModel):
     role: UserRole
     currency: str
     timezone: str
-    isactive: bool
+    is_active: bool
     is_verified: bool
     email_verified: bool
     phone_verified: bool
@@ -63,7 +66,7 @@ class UserRead(BaseModel):
     updated_at: datetime
     last_login_at: datetime | None
 
-    # STATISTICS (for dashboard)
+    # Statistics (for dashboard)
     total_categories: int | None = 0
     total_transactions: int | None = 0
     total_balance: float | None = 0.0
@@ -80,7 +83,7 @@ class UserRead(BaseModel):
                 "role": "user",
                 "is_active": True,
                 "is_verified": True,
-                "created_at": "2026-01-30T10:30:00Z",
+                "created_at": "2024-01-30T10:30:00Z",
             }
         },
     )
@@ -88,10 +91,19 @@ class UserRead(BaseModel):
 
 # UPDATE
 class UserUpdate(BaseModel):
-    pass
+    email: EmailStr | None = None
+    username: str | None = Field(
+        default=None, min_length=3, max_length=32, pattern=r"^[a-zA-Z0-9_]+$"
+    )
+    first_name: str | None = Field(default=None, max_length=32)
+    last_name: str | None = Field(default=None, max_length=32)
+    phone: str | None = Field(default=None, pattern=r"^\+?[1-9]\d{1,14}$")
+    currency: str | None = Field(default=None, max_length=3)
+    timezone: str | None = None
+    avatar_url: str | None = Field(default=None, description="URL to user avatar")
 
 
-# PASSWORD CHANGE
+# USER PASSWORD CHANGE
 class UserPasswordChange(BaseModel):
     pass
 
