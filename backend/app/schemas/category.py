@@ -2,9 +2,10 @@ import uuid
 from datetime import datetime
 from enum import Enum
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
+# CATEGORY TYPE
 class CategoryType(str, Enum):
     INCOME = "income"
     EXPENSE = "expense"
@@ -25,13 +26,27 @@ class CategoryRead(BaseModel):
     type: CategoryType
     color: str
     icon: str | None
-    user_id: int
+    user_id: uuid.UUID
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
+# UPDATE
 class CategoryUpdate(BaseModel):
-    pass
+    name: str | None = Field(min_length=1, max_length=256)
+    type: CategoryType | None = None
+    color: str | None = Field(default=None, pattern=r"^#[0-9A-Fa-f]{6}$")
+    icon: str | None = Field(default=None, max_length=50)
+
+
+# LIST
+class CategoryList(BaseModel):
+    items: list[CategoryRead]
+    total: int
+    page: int
+    page_size: int
+    pages: int
+
+    model_config = ConfigDict(from_attributes=True)
