@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from enum import Enum
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 # CATEGORY TYPE
@@ -40,3 +40,13 @@ class CategoryUpdate(BaseModel):
     type: CategoryType | None = None
     color: str | None = Field(default=None, pattern=r"^#[0-9A-Fa-f]{6}$")
     icon: str | None = Field(default=None, max_length=50)
+
+
+# LIST
+class CategoryList(BaseModel):
+    items: list[CategoryRead]
+    total: int
+    page: int
+    page_size: int
+
+    model_config = ConfigDict(from_attributes=True)
