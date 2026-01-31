@@ -29,7 +29,8 @@ class UserCreate(BaseModel):
 
 # LOGIN
 class UserLogin(BaseModel):
-    pass
+    email_or_username: str = Field(description="Email or username")
+    password: str
 
 
 # READ
