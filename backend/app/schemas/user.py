@@ -1,6 +1,8 @@
+import uuid
+from datetime import datetime
 from enum import Enum
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 # USER TYPE
@@ -21,6 +23,7 @@ class UserCreate(BaseModel):
     )
     password: str = Field(min_length=8, max_length=32, description="Strong password")
     # Optional fields
+
     # first_name:
     # last_name:
     # phone:
@@ -35,7 +38,44 @@ class UserLogin(BaseModel):
 
 # READ
 class UserRead(BaseModel):
-    pass
+    id: uuid.UUID
+    email: EmailStr
+    username: str
+    first_name: str | None
+    last_name: str | None
+    phone: str | None
+    role: UserRole
+    currency: str
+    timezone: str
+    isactive: bool
+    is_verified: bool
+    email_verified: bool
+    phone_verified: bool
+    created_at: datetime
+    updated_at: datetime
+    last_login_at: datetime | None
+
+    # STATISTICS (for dashboard)
+    total_categories: int | None = 0
+    total_transactions: int | None = 0
+    total_balance: float | None = 0.0
+
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={
+            "example": {
+                "id": "123e4567-e89b-12d3-a456-426614174000",
+                "email": "user@example.com",
+                "username": "john_doe",
+                "first_name": "John",
+                "last_name": "Doe",
+                "role": "user",
+                "is_active": True,
+                "is_verified": True,
+                "created_at": "2026-01-30T10:30:00Z",
+            }
+        },
+    )
 
 
 # UPDATE
