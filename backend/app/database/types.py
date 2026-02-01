@@ -8,8 +8,18 @@ from sqlalchemy.orm import mapped_column
 
 # Base types for all models <3
 uuid_pk = Annotated[
-    uuid.UUID, mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    uuid.UUID,
+    mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
 ]
+uuid_fk = Annotated[
+    uuid.UUID,
+    mapped_column(UUID(as_uuid=True), nullable=False),
+]
+uuid_fk_nullable = Annotated[
+    uuid.UUID | None,
+    mapped_column(UUID(as_uuid=True), nullable=True),
+]
+
 
 created_at = Annotated[
     datetime.datetime, mapped_column(server_default=text("TIMEZONE('utc', now())"))
