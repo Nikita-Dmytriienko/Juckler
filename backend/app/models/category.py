@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.app.database.base import Base
 
-from ..database.types import created_at, str_256, updated_at, uuid_pk
+from ..database.types import created_at, str_256, updated_at, uuid_fk, uuid_pk
 
 if TYPE_CHECKING:
     from .transaction import Transaction
@@ -31,9 +31,8 @@ class Category(Base):
     created_at: Mapped[created_at]
     updated_at: Mapped[updated_at]
     # Foreign key
-    user_id: Mapped[uuid_pk] = mapped_column(
+    user_id: Mapped[uuid_fk] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"),
-        nullable=False,
         index=True,
     )
 
