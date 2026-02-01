@@ -1,6 +1,9 @@
+import uuid
+from datetime import datetime
+from decimal import Decimal
 from enum import Enum
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class TransactionType(str, Enum):
@@ -24,26 +27,47 @@ class Currency(str, Enum):
 
 # CREATE
 class TransactionCreate(BaseModel):
-    pass
+    amount: Decimal = Field(gt=0)
+    type: TransactionType
+    description: str | None = None
+    date: datetime = Field(default_factory=datetime.now)
+    category_id: uuid.UUID | None = None
+    currency: str = "USD"
 
 
 # UPDATE
 class TransactionUpdate(BaseModel):
-    pass
+    amount: Decimal | None = Field(default=None, gt=0)
+    type: TransactionType | None = None
+    description: str | None = None
+    date: datetime | None = None
+    category_id: uuid.UUID | None = None
 
 
 # READ
 class TransactionRead(BaseModel):
-    pass
+    id: uuid.UUID
+    amount: Decimal
+    type: TransactionType
+    description: str | None
+    date: datetime
+    status: TransactionStatus
+    currency: str
+    category_id: uuid.UUID | None
+    user_id: uuid.UUID
+    created_at: datetime
+    updated_at: datetime
 
-
-# LIST WITH FILTERS
-class TransactionFilters(BaseModel):
-    pass
+    model_config = ConfigDict(from_attributes=True)
 
 
 # LIST
 class TransactionList(BaseModel):
+    items: list[TransactionRead]
+
+
+# LIST WITH FILTERS
+class TransactionFilters(BaseModel):
     pass
 
 

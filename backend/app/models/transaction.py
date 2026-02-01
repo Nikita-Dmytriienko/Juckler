@@ -7,7 +7,13 @@ from sqlalchemy import Enum, ForeignKey, Index, Numeric, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.app.database.base import Base
-from backend.app.database.types import created_at, updated_at, uuid_pk
+from backend.app.database.types import (
+    created_at,
+    updated_at,
+    uuid_fk,
+    uuid_fk_nullable,
+    uuid_pk,
+)
 
 if TYPE_CHECKING:
     from .category import Category
@@ -46,14 +52,12 @@ class Transaction(Base):
     currency: Mapped[str] = mapped_column(String(3), default="USD")
 
     # Foreign keys
-    user_id: Mapped[uuid_pk] = mapped_column(
+    user_id: Mapped[uuid_fk] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"),
-        nullable=False,
         index=True,
     )
-    category_id: Mapped[uuid_pk | None] = mapped_column(
+    category_id: Mapped[uuid_fk_nullable] = mapped_column(
         ForeignKey("categories.id", ondelete="SET NULL"),
-        nullable=True,
         index=True,
     )
 

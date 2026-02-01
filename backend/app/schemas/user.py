@@ -66,11 +66,6 @@ class UserRead(BaseModel):
     updated_at: datetime
     last_login_at: datetime | None
 
-    # Statistics (for dashboard)
-    total_categories: int | None = 0
-    total_transactions: int | None = 0
-    total_balance: float | None = 0.0
-
     model_config = ConfigDict(
         from_attributes=True,
         json_schema_extra={
@@ -144,3 +139,10 @@ class UserPublic(BaseModel):
     first_name: str | None
     last_name: str | None
     avatar_url: str | None
+
+
+# Statistics (for dashboard)
+class UserWithStats(UserRead):
+    total_categories: int | None = 0
+    total_transactions: int | None = 0
+    total_balance: float | None = 0.0
