@@ -9,6 +9,9 @@ from sqlalchemy import engine_from_config, pool
 
 from backend.app.core.config import settings
 from backend.app.database.base import Base
+from backend.app.models.category import Category  # noqa
+from backend.app.models.transaction import Transaction  # noqa
+from backend.app.models.user import User  # noqa
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -23,6 +26,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
+
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
