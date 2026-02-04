@@ -1,8 +1,21 @@
-.idea
-.venv
+# IDE
+.idea/
+.vscode/
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Environment
 .env
 
-
+# Alembic
 backend/alembic/script.py.mako
-alembic.ini
-backend/alembic/versions
+
+# OS
+.DS_Store
+Thumbs.db
