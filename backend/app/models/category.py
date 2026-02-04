@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from .user import User
 
 
-class CategoryType(enum.Enum):
+class CategoryType(str, enum.Enum):
     INCOME = "income"
     EXPENSE = "expense"
 
@@ -39,7 +39,7 @@ class Category(Base):
     # Relationships
     user: Mapped["User"] = relationship(back_populates="categories")
     transactions: Mapped[list["Transaction"]] = relationship(
-        back_populates="category", cascade="all, delete-orphan", lazy="selectin"
+        back_populates="category", cascade="all, delete-orphan"
     )
 
     __table_args__ = (
