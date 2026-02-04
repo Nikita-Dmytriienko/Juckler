@@ -59,16 +59,11 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
 
     # Relationships
     categories: Mapped[list["Category"]] = relationship(
-        back_populates="user", cascade="all, delete-orphan", lazy="selectin"
+        back_populates="user", cascade="all, delete-orphan"
     )
 
     transactions: Mapped[list["Transaction"]] = relationship(
-        back_populates="user", cascade="all, delete-orphan", lazy="selectin"
+        back_populates="user", cascade="all, delete-orphan"
     )
 
-    __table_args__ = (
-        Index("idx_user_username", "username"),
-        Index("idx_user_phone", "phone"),
-        Index("idx_user_role", "role"),
-        Index("idx_user_status", "is_active", "is_verified"),
-    )
+    __table_args__ = (Index("idx_user_status", "is_active", "is_verified"),)

@@ -1,11 +1,18 @@
 from pathlib import Path
 
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=Path(__file__).resolve().parents[1] / ".env",
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
+
     PROJECT_NAME: str = "Juckler"
-    API_V1_STR: str = "/api"
+    API_V1_STR: str = "/api/v1"
+    DEBUG: bool = False
     SECRET_KEY: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
 
@@ -18,9 +25,6 @@ class Settings(BaseSettings):
     @property
     def DATABASE_URL(self) -> str:
         return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
-
-    class Config:
-        env_file = Path(__file__).parent.parent / ".env"
 
 
 settings = Settings()

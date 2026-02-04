@@ -1,28 +1,10 @@
 import uuid
 from datetime import datetime
 from decimal import Decimal
-from enum import Enum
 
 from pydantic import BaseModel, ConfigDict, Field
 
-
-class TransactionType(str, Enum):
-    INCOME = "income"
-    EXPENSE = "expense"
-    TRANSFER = "transfer"
-
-
-class TransactionStatus(str, Enum):
-    COMPLETED = "completed"
-    PENDING = "pending"
-    CANCELLED = "cancelled"
-    FAILED = "failed"
-
-
-class Currency(str, Enum):
-    USD = "USD"
-    EUR = "EUR"
-    UAH = "UAH"
+from backend.app.models.transaction import TransactionStatus, TransactionType
 
 
 # CREATE
@@ -64,23 +46,9 @@ class TransactionRead(BaseModel):
 # LIST
 class TransactionList(BaseModel):
     items: list[TransactionRead]
+    total: int
+    page: int
+    page_size: int
+    pages: int
 
-
-# LIST WITH FILTERS
-class TransactionFilters(BaseModel):
-    pass
-
-
-# STATISTICS
-class TransactionSummary(BaseModel):
-    pass
-
-
-# CATEGORY SUMMARY
-class CategorySummary(BaseModel):
-    pass
-
-
-# TRANSACTION STATS
-class TransactionStats(BaseModel):
-    pass
+    model_config = ConfigDict(from_attributes=True)

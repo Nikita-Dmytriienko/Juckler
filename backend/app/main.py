@@ -1,55 +1,37 @@
-# ruff: noqa: B008  # Framework convention override - FastAPI requires this pattern
-from fastapi import Depends, FastAPI
-from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncSession
+# Framework convention override - FastAPI requires this pattern
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
-from backend.app.core.security import auth_backend, fastapi_users
-from backend.app.database.database import get_db
-from backend.app.schemas.user import UserCreate, UserRead, UserUpdate
+from backend.app.api.v1.auth import router as auth_router
+from backend.app.api.v1.common import router as common_router
+from backend.app.core.config import settings
+from backend.app.exceptions import BaseAppError
 
-app = FastAPI(title="Juckler - Personal Finance Tracker")
-
-app.include_router(
-    fastapi_users.get_auth_router(auth_backend),
-    prefix="/auth/jwt",
-    tags=["auth"],
+app = FastAPI(
+    title=f"{settings.PROJECT_NAME} — Personal Finance Tracker",
+    debug=settings.DEBUG,
 )
 
-app.include_router(
-    fastapi_users.get_register_router(UserRead, UserCreate),
-    prefix="/auth",
-    tags=["auth"],
-)
-
-app.include_router(
-    fastapi_users.get_users_router(UserRead, UserUpdate),
-    prefix="/users",
-    tags=["users"],
+# CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"] if settings.DEBUG else [],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
-# GET
-@app.get("/")
-def root():
-    return {"message": "First start"}
+# Exception handlers
+@app.exception_handler(BaseAppError)
+async def app_error_handler(_request: Request, exc: BaseAppError) -> JSONResponse:
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.detail},
+    )
 
 
-@app.get("/health")
-async def health(db: AsyncSession = Depends(get_db)):
-    try:
-        await db.execute(text("SELECT 1"))
-        return {"status": "ok", "detail": "Service is healthy"}
-    except Exception as e:
-        return {"status": "error", "database": "disconnected", "detail": str(e)}
-
-
-# POST
-# @app.post()
-
-
-# PUT
-# @app.put()
-
-
-# DELETE
-# @app.delete()
+# Routers
+app.include_router(common_router, prefix="/health", tags=["health"])
+app.include_router(auth_router, prefix=f"{settings.API_V1_STR}/auth", tags=["auth"])

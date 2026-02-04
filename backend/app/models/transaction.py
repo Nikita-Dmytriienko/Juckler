@@ -20,13 +20,13 @@ if TYPE_CHECKING:
     from .user import User
 
 
-class TransactionType(enum.Enum):
+class TransactionType(str, enum.Enum):
     INCOME = "income"
     EXPENSE = "expense"
     TRANSFER = "transfer"
 
 
-class TransactionStatus(enum.Enum):
+class TransactionStatus(str, enum.Enum):
     PENDING = "pending"
     COMPLETED = "completed"
     CANCELLED = "cancelled"
